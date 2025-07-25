@@ -80,4 +80,4 @@ with app.app_context():
     db.session.add_all([expense1, expense2, expense3, expense4])
     db.session.commit()
 
-    print("✅ Database successfully seeded.")
+    print("Database successfully seeded.")
