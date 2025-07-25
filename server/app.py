@@ -7,7 +7,6 @@ from sqlalchemy.exc import IntegrityError
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from models import User, Trip, Expense, UserSchema, TripSchema, ExpenseSchema
 from datetime import datetime
-from sqlalchemy import func
 
 
 def create_app():
@@ -22,15 +21,18 @@ def create_app():
     api = Api(app)
 
     # API resources
-    api.add_resource(Signup, '/signup')
-    api.add_resource(Login, '/login')
-    api.add_resource(WhoAmI, '/me')
-    api.add_resource(TripsIndex, '/trips')
-    api.add_resource(TripDetail, '/trips/<int:id>')
-
-    # @app.route('/')
-    # def index():
-    #     return {'message': 'Backend is running'}, 200
+    # api.add_resource(WhoAmI, '/me')
+    # api.add_resource(Signup, '/signup')
+    # api.add_resource(Login, '/login')
+    # api.add_resource(TripsIndex, '/trips')
+    # api.add_resource(TripDetail, '/trips/<int:id>')
+    api.add_resource(Signup, '/signup', endpoint='signup')
+    api.add_resource(WhoAmI, '/me', endpoint='me')
+    api.add_resource(Login, '/login', endpoint='login')
+    api.add_resource(TripsIndex, '/trips', endpoint='trips')
+    api.add_resource(TripDetail, '/trips/<int:id>', endpoint='trip_detail')
+    api.add_resource(ExpensesIndex, '/expenses', endpoint='expenses')
+    api.add_resource(ExpenseDetail, '/expenses/<int:id>', endpoint='expense_detail')
 
     return app
 
@@ -174,3 +176,173 @@ class TripDetail(Resource):
             return {"error": "Unauthorized"}, 403      
         return TripSchema().dump(trip), 200
         
+
+class ExpensesIndex(Resource):
+    ## Pagination
+    @jwt_required()
+    def get(self):
+        curr_user_id = get_jwt_identity()
+
+        # GET /expenses?trip_id=3&page=1&per_page=5
+        page = request.args.get("page", 1, type=int)
+        per_page = request.args.get("per_page", 5, type=int)
+        trip_id = request.args.get("trip_id", type=int)
+
+        trip = Trip.query.filter_by(id=trip_id, user_id=curr_user_id).first()
+        if not trip:
+            return {"error": "Trip not found"}, 404
+        
+        #all expense records of this trip
+        query = Expense.query.filter_by(trip_id=trip_id)
+
+        pagination = query.order_by(Expense.date.desc()).paginate(
+            page=page, 
+            per_page=per_page, 
+            error_out=False
+        )
+        expenses = pagination.items
+        result = ExpenseSchema(many=True).dump(expenses)
+
+        return jsonify({
+            "expenses": result,
+            "page": page,
+            "per_page": per_page,
+            "total_pages": pagination.pages,
+            "total_items": pagination.total
+        })
+
+    @jwt_required()
+    def post(self):
+        curr_user_id = get_jwt_identity()
+        data = request.get_json()
+
+        trip_id = data.get("trip_id")
+        expense_item=data.get("expense_item")
+        amount = data.get("amount")
+        category = data.get("category")
+        date_str = data.get("date")
+
+        trip = Trip.query.filter_by(id=trip_id, user_id=curr_user_id).first()
+        if not trip:
+            return {"error": "Trip not found or unauthorized"}, 404
+        
+        try:
+            date = datetime.strptime(date_str, "%Y-%m-%d").date()
+        except Exception:
+            return {"error": "Invalid date format. Use YYYY-MM-DD"}, 400
+        
+        new_expense = Expense(
+            trip_id = trip_id,
+            expense_item = expense_item,
+            amount = amount,
+            category = category,
+            date = date
+        )
+
+        try:
+            db.session.add(new_expense)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            return {"error": str(e)}, 500
+        
+        result = ExpenseSchema().dump(new_expense)
+        return result, 201
+    
+
+class ExpenseDetail(Resource):
+    @jwt_required()
+    def delete(self, id):
+        expense = Expense.query.get(id)
+
+        if not expense:
+            return {"error": "Expense not found"}, 404
+
+        try:
+            db.session.delete(expense)
+            db.session.commit()
+            return {"message": "Expense deleted successfully"}, 200
+        except Exception as e:
+            return {"error": str(e)}, 500
+        
+    
+    @jwt_required()
+    def patch(self, id):
+        expense = Expense.query.filter_by(id=id).first()
+
+        if not expense:
+            return {'error': 'Expense not found or not yours'}, 404
+
+        data = request.get_json()
+
+        expense.expense_item = data.get("expense_item", expense.expense_item)
+        expense.amount = data.get("amount", expense.amount)
+        expense.date = datetime.strptime(data["date"], "%Y-%m-%d").date() if "date" in data else expense.date
+        expense.category = data.get("category", expense.category)
+
+        try:
+            # db.session.add(expense)       
+            db.session.commit()  
+            return ExpenseSchema().dump(expense), 200 
+        except ValueError as e:
+            return {"errors": [str(e)]}, 400
+        except Exception as e:
+            db.session.rollback()
+
+
+# class ExpenseDetail(Resource):
+#     @jwt_required()
+#     def delete(self, id):
+#         curr_user_id = get_jwt_identity()
+#         expense = Expense.query.get(id)
+
+#         if not expense:
+#             return {"error": "Expense not found"}, 404
+        
+#         trip = Trip.query.get(expense.trip_id)
+#         if not trip or trip.user_id != curr_user_id:
+#             return {"error": "Unauthorized to delete this expense"}, 403
+        
+#         try:
+#             db.session.delete(expense)
+#             db.session.commit()
+#             return {"message": "Expense deleted successfully"}, 200
+#         except Exception as e:
+#             return {"error": str(e)}, 500
+        
+    
+#     @jwt_required()
+#     def patch(self, id):
+#         curr_user_id = get_jwt_identity()
+#         expense = Expense.query.get(id)
+
+#         if not expense:
+#             return {'error': 'Expense not found or not yours'}, 404
+        
+#         trip = Trip.query.get(expense.trip_id)
+#         if not trip or trip.user_id != curr_user_id:
+#             return {"error": "Unauthorized to edit this expense"}, 403
+        
+#         data = request.get_json()
+
+#         expense.expense_item = data.get("expense_item", expense.expense_item)
+#         expense.amount = data.get("amount", expense.amount)
+#         expense.date = datetime.strptime(data["date"], "%Y-%m-%d").date() if "date" in data else expense.date
+#         expense.category = data.get("category", expense.category)
+
+#         try:
+#             db.session.commit()
+#             return ExpenseSchema().dump(expense), 200
+#         except ValueError as e:
+#             return {"errors": [str(e)]}, 400
+#         except Exception as e:
+#             db.session.rollback()
+        
+
+    
+
+
+
+
+
+

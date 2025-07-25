@@ -6,6 +6,8 @@ import NavBar from "./components/NavBar/NavBar.jsx";
 import Login from "./pages/Login/Login.jsx";
 import TripList from "./pages/TripList/TripList.jsx";
 import NewTrip from "./pages/NewTrip/NewTrips.jsx";
+import ExpenseList from "./pages/ExpenseList/ExpenseList.jsx";
+import NewExpense from "./pages/NewExpense/NewExpense.jsx";
 
 
 function App() {
@@ -36,9 +38,12 @@ function App() {
       <SideBar />
 
       <Routes>
-        <Route path="/" element={<div>Welcome, {user.username}</div>} />
+        {/* <Route path="/" element={<div>Welcome, {user.username}</div>} /> */}
+        <Route path="/" element={<TripList userId={user.id} />} />
         <Route path="/trips" element={<TripList userId={user.id} />} />
         <Route path="/newTrip" element={<NewTrip user={user} />} />
+        <Route path="/trips/:trip_id/expenses" element={<ExpenseList />} />
+        <Route path="/trips/:trip_id/new_expense" element={<NewExpense />} />
       </Routes>
     </>
   );

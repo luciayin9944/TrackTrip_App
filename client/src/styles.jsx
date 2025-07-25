@@ -70,7 +70,7 @@ const COLORS = {
   },
 };
 
-const ButtonBase = styled.button`
+export const ButtonBase = styled.button`
   cursor: pointer;
   font-size: 1rem;
   border: 1px solid transparent;
@@ -79,7 +79,7 @@ const ButtonBase = styled.button`
   text-decoration: none;
 `;
 
-const FillButton = styled(ButtonBase)`
+export const FillButton = styled(ButtonBase)`
   background-color: var(--main);
   color: var(--accent);
 
@@ -88,7 +88,7 @@ const FillButton = styled(ButtonBase)`
   }
 `;
 
-const OutlineButton = styled(ButtonBase)`
+export const OutlineButton = styled(ButtonBase)`
   background-color: white;
   color: var(--main);
   border: 2px solid var(--main);
@@ -110,3 +110,14 @@ export function Button({ variant = "fill", color = "primary", ...props }) {
 
   return <Component style={COLORS[color]} {...props} />;
 }
+
+
+export const PageButton = styled.button`
+  margin: 0 4px;
+  padding: 6px 12px;
+  background-color: ${({ active }) => (active ? "#8884d8" : "#f0f0f0")};
+  color: ${({ active }) => (active ? "#fff" : "#000")};
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+`;
