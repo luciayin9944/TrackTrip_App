@@ -8,6 +8,7 @@ import TripList from "./pages/TripList/TripList.jsx";
 import NewTrip from "./pages/NewTrip/NewTrips.jsx";
 import ExpenseList from "./pages/ExpenseList/ExpenseList.jsx";
 import NewExpense from "./pages/NewExpense/NewExpense.jsx";
+import ExpenseSummary from "./pages/ExpenseSummary/ExpenseSummary.jsx";
 
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
         <Route path="/newTrip" element={<NewTrip user={user} />} />
         <Route path="/trips/:trip_id/expenses" element={<ExpenseList />} />
         <Route path="/trips/:trip_id/new_expense" element={<NewExpense />} />
+        <Route path="/trips/:trip_id/summary" element={<ExpenseSummary />} />
       </Routes>
     </>
   );

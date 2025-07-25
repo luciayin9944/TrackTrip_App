@@ -2,14 +2,14 @@ import styled from "styled-components";
 
 export const Wrapper = styled.section`
   max-width: 800px;
-  margin: 40px auto;
+  margin: 40px auto 400px;
 `;
 
 export const Title = styled.h1`
   color: #255b80;
   text-align: center;
   font-size: 2.5rem;
-  margin-top: 60px;
+  margin-top: 100px;
   margin-bottom: 32px;
 `;
 

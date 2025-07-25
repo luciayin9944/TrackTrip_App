@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from models import User, Trip, Expense, UserSchema, TripSchema, ExpenseSchema
 from datetime import datetime
+from sqlalchemy import func
 
 
 def create_app():
@@ -21,11 +22,6 @@ def create_app():
     api = Api(app)
 
     # API resources
-    # api.add_resource(WhoAmI, '/me')
-    # api.add_resource(Signup, '/signup')
-    # api.add_resource(Login, '/login')
-    # api.add_resource(TripsIndex, '/trips')
-    # api.add_resource(TripDetail, '/trips/<int:id>')
     api.add_resource(Signup, '/signup', endpoint='signup')
     api.add_resource(WhoAmI, '/me', endpoint='me')
     api.add_resource(Login, '/login', endpoint='login')
@@ -33,6 +29,7 @@ def create_app():
     api.add_resource(TripDetail, '/trips/<int:id>', endpoint='trip_detail')
     api.add_resource(ExpensesIndex, '/expenses', endpoint='expenses')
     api.add_resource(ExpenseDetail, '/expenses/<int:id>', endpoint='expense_detail')
+    api.add_resource(CategorySummary, '/trips/<int:trip_id>/summary')
 
     return app
 
@@ -288,6 +285,29 @@ class ExpenseDetail(Resource):
             return {"errors": [str(e)]}, 400
         except Exception as e:
             db.session.rollback()
+
+
+
+class CategorySummary(Resource):
+    @jwt_required()
+    def get(self, trip_id):  ##get trip_id from URL
+        curr_user_id = get_jwt_identity()
+
+        trip = Trip.query.filter_by(id=trip_id, user_id=curr_user_id).first()
+        if not trip:
+            return {"error": "Trip not found"}, 404
+        
+        ## get expense records under this trip
+        query = Expense.query.filter_by(trip_id=trip_id)
+
+        results = query.with_entities(
+            Expense.category,
+            func.sum(Expense.amount).label("total")
+        ).group_by(Expense.category).all()
+        
+        return jsonify([
+            {"category": category, "total": float(total)} for category, total in results
+        ])
 
 
 # class ExpenseDetail(Resource):
