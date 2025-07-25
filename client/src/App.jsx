@@ -1,8 +1,11 @@
 // App.jsx
 import React, { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
-// import NavBar from "./components/NavBar.jsx";
+import SideBar from "./components/SideBar/SideBar.jsx";
+import NavBar from "./components/NavBar/NavBar.jsx";
 import Login from "./pages/Login/Login.jsx";
+import TripList from "./pages/TripList/TripList.jsx";
+import NewTrip from "./pages/NewTrip/NewTrips.jsx";
 
 
 function App() {
@@ -11,7 +14,7 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      fetch("/me", {
+      fetch("/", {
         headers: { Authorization: `Bearer ${token}` }
       }).then((r) => {
         if (r.ok) return r.json()
@@ -29,8 +32,13 @@ function App() {
 
   return (
     <>
+      <NavBar user={user} setUser={setUser} />
+      <SideBar />
+
       <Routes>
         <Route path="/" element={<div>Welcome, {user.username}</div>} />
+        <Route path="/trips" element={<TripList userId={user.id} />} />
+        <Route path="/newTrip" element={<NewTrip user={user} />} />
       </Routes>
     </>
   );
