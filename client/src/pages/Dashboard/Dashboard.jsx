@@ -31,8 +31,9 @@ function Dashboard() {
       .then((data) => {
         setTrip(data);
 
-        // get all expense records
+        // // get all expense records
         return fetch(`/expenses?trip_id=${data.id}`, {
+        // return fetch(`/trips/rip_id=${data.id}/summary`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
