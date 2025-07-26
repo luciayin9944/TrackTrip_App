@@ -20,4 +20,5 @@ jwt = JWTManager()
 class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URI")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "super-secret")
+    # JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "super-secret")
+    JWT_SECRET_KEY = "i-should-be-secret-and-stored-in-env-variables"
