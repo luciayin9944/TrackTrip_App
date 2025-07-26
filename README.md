@@ -35,16 +35,36 @@ This is a secure full-stack expense tracking application built with React for th
 
 
 
-## Set Up
+## 🛠️ Set Up
 
- Clone the repository
+  ###  Prerequisites: Install PostgreSQL and pgAdmin
+
+  1. Install PostgreSQL
+  2. Install pgAdmin
+  3. Create a database
+     - After installation, create a new database for the app (e.g., tracktrip_db).
+
+```bash
+   psql -U postgres
+   CREATE DATABASE tracktrip_db;
+```
+
+ 4. Update database configuration
+    - In your Flask app config (or .env file), update the database URI:
+```bash
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:<yourpassword>@localhost:5432/tracktrip_db'
+```
+Replace <yourpassword> with your actual PostgreSQL password.
+
+
+ ### Clone the repository
    ```bash
    git https://github.com/luciayin9944/TrackTrip_App.git
    cd TrackTrip_App
   ```
 
 
-To get set up, run:
+### Set Up the Backend
 
     ```bash
     pipenv install && pipenv shell
@@ -56,14 +76,17 @@ To get set up, run:
     python seed.py
     ```
 
-You can run the Flask server with:
+Run the Flask server:
 
     ```bash
     python run.py
     ```
-And you can run React in another terminal from the project root directory with:
+
+### Start the Frontend
+In another terminal, from the client directory:
 
     ```bash
+    cd client
     npm install
     npm run dev
     ```
