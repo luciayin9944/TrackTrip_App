@@ -32,8 +32,7 @@ function Dashboard() {
         setTrip(data);
 
         // // get all expense records
-        return fetch(`/expenses?trip_id=${data.id}`, {
-        // return fetch(`/trips/rip_id=${data.id}/summary`, {
+        return fetch(`/expenses?trip_id=${data.id}&per_page=1000`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
