@@ -30,6 +30,7 @@ def create_app():
     api.add_resource(ExpensesIndex, '/expenses', endpoint='expenses')
     api.add_resource(ExpenseDetail, '/expenses/<int:id>', endpoint='expense_detail')
     api.add_resource(CategorySummary, '/trips/<int:trip_id>/summary')
+    api.add_resource(LatestTrip, '/trips/latest')
 
     return app
 
@@ -277,8 +278,7 @@ class ExpenseDetail(Resource):
         expense.date = datetime.strptime(data["date"], "%Y-%m-%d").date() if "date" in data else expense.date
         expense.category = data.get("category", expense.category)
 
-        try:
-            # db.session.add(expense)       
+        try:   
             db.session.commit()  
             return ExpenseSchema().dump(expense), 200 
         except ValueError as e:
@@ -310,59 +310,14 @@ class CategorySummary(Resource):
         ])
 
 
-# class ExpenseDetail(Resource):
-#     @jwt_required()
-#     def delete(self, id):
-#         curr_user_id = get_jwt_identity()
-#         expense = Expense.query.get(id)
+class LatestTrip(Resource):
+    @jwt_required()
+    def get(self):
+        curr_user_id = get_jwt_identity()
+        trip = Trip.query.filter_by(user_id=curr_user_id).order_by(Trip.end_date.desc()).first()
 
-#         if not expense:
-#             return {"error": "Expense not found"}, 404
-        
-#         trip = Trip.query.get(expense.trip_id)
-#         if not trip or trip.user_id != curr_user_id:
-#             return {"error": "Unauthorized to delete this expense"}, 403
-        
-#         try:
-#             db.session.delete(expense)
-#             db.session.commit()
-#             return {"message": "Expense deleted successfully"}, 200
-#         except Exception as e:
-#             return {"error": str(e)}, 500
-        
+        if not trip:
+            return {"error": "No trips found"}, 404
+        return TripSchema().dump(trip), 200
     
-#     @jwt_required()
-#     def patch(self, id):
-#         curr_user_id = get_jwt_identity()
-#         expense = Expense.query.get(id)
-
-#         if not expense:
-#             return {'error': 'Expense not found or not yours'}, 404
-        
-#         trip = Trip.query.get(expense.trip_id)
-#         if not trip or trip.user_id != curr_user_id:
-#             return {"error": "Unauthorized to edit this expense"}, 403
-        
-#         data = request.get_json()
-
-#         expense.expense_item = data.get("expense_item", expense.expense_item)
-#         expense.amount = data.get("amount", expense.amount)
-#         expense.date = datetime.strptime(data["date"], "%Y-%m-%d").date() if "date" in data else expense.date
-#         expense.category = data.get("category", expense.category)
-
-#         try:
-#             db.session.commit()
-#             return ExpenseSchema().dump(expense), 200
-#         except ValueError as e:
-#             return {"errors": [str(e)]}, 400
-#         except Exception as e:
-#             db.session.rollback()
-        
-
-    
-
-
-
-
-
 
