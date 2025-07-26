@@ -1,7 +1,6 @@
 # TrackTrip_App
 
-
-This is a secure full-stack expense tracking application built with React (frontend) and Flask (backend). Users can register, log in, and manage their traveling expenses with full CRUD functionality. The backend provides robust APIs with authentication, secure access control, filtering, categorization, and analytical features like summary and percentage breakdowns.
+This is a secure full-stack expense tracking application built with React for the frontend, Flask for the backend, and a PostgreSQL database. Users can register, log in, and manage their traveling expenses with full CRUD functionality. The backend provides robust APIs with authentication, secure access control, filtering, categorization, and analytical features like summary and percentage breakdowns.
 
 
 ## 🔐 Features
