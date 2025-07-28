@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Box, Button } from "../../styles";
 import { useNavigate } from "react-router-dom";
-import { Wrapper, FilterWrapper, Title, TripCard } from "./style";
+import { Wrapper, FilterWrapper, Title, TripCard, DeleteButton } from "./style";
 
 function TripList() {
     const [trips, setTrips] = useState([]);
@@ -56,6 +56,17 @@ function TripList() {
             console.error("Error filtering:", err);
             });
         }
+
+    const handleDeleteTrip = (tripId) => {
+        fetch(`/trips/${tripId}`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+        }).then((r) => {
+            if (r.ok) setTrips((prev) => prev.filter((e) => e.id !== tripId));
+        });
+    }
 
     const handleViewExpenses = (tripId) => {
         navigate(`/trips/${tripId}/expenses`);
@@ -112,6 +123,9 @@ function TripList() {
                                 <Button variant="outline" as={Link} to={`/trips/${trip.id}/summary`}>
                                     View Summary
                                 </Button>
+                                <DeleteButton onClick={()=> handleDeleteTrip(trip.id)}>
+                                    Delete
+                                </DeleteButton>
                             </Box>
                         </TripCard>
                     ))}
