@@ -5,8 +5,8 @@ import { Wrapper, NavButton } from "./style";
 function SideBar() {
   return (
     <Wrapper>
-      <NavButton to="/dashboard">Dashboard</NavButton>
-      <NavButton to="/trips">Trips</NavButton>
+      <NavButton to="/dashboard">Current Trip</NavButton>
+      <NavButton to="/trips">All Trips</NavButton>
     </Wrapper>
   );
 }

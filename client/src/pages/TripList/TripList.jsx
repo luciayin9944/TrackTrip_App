@@ -115,7 +115,7 @@ function TripList() {
                                 <p>
                                     📅 {new Date(trip.start_date).toLocaleDateString()} ~ {new Date(trip.end_date).toLocaleDateString()}
                                     <br />
-                                    💵 Budget: ${trip.budget}
+                                    {/* 💵 Budget: ${trip.budget} */}
                                 </p>
                                 <Button variant="outline" onClick={()=>handleViewExpenses(trip.id)}>
                                     View Expenses
