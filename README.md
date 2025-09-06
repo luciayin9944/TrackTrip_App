@@ -58,15 +58,15 @@ Replace <yourpassword> with your actual PostgreSQL password.
 
 
  ### Clone the repository
-   ```bash
+```bash
    git https://github.com/luciayin9944/TrackTrip_App.git
    cd TrackTrip_App
-  ```
+```
 
 
 ### Set Up the Backend
 
-    ```bash
+```bash
     pipenv install && pipenv shell
     cd server
     export FLASK_APP=app.py
@@ -74,19 +74,19 @@ Replace <yourpassword> with your actual PostgreSQL password.
     flask db migrate -m "initial migration"
     flask db upgrade head
     python seed.py
-    ```
+```
 
 Run the Flask server:
 
-    ```bash
+```bash
     python run.py
-    ```
+```
 
 ### Start the Frontend
 In another terminal, from the client directory:
 
-    ```bash
+```bash
     cd client
     npm install
     npm run dev
-    ```
+```
