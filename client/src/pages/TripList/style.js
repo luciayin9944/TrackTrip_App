@@ -1,5 +1,6 @@
 // styled-component
 import styled from "styled-components";
+import { Button } from "../../styles";
 
 export const Wrapper = styled.section`
   max-width: 800px;
@@ -31,4 +32,22 @@ export const TripCard = styled.article`
   background-color: #f6f8fa;
   border-radius: 12px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: relative;
+`;
+
+
+// export const Box = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   gap: 8px;
+//   padding-bottom: 60px; 
+//   position: relative;
+// `;
+
+
+
+export const DeleteButton = styled(Button)`
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
 `;

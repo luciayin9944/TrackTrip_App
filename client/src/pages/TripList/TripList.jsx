@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Box, Button } from "../../styles";
 import { useNavigate } from "react-router-dom";
-import { Wrapper, FilterWrapper, Title, TripCard } from "./style";
+import { Wrapper, FilterWrapper, Title, TripCard, DeleteButton } from "./style";
 
 function TripList() {
     const [trips, setTrips] = useState([]);
@@ -57,6 +57,17 @@ function TripList() {
             });
         }
 
+    const handleDeleteTrip = (tripId) => {
+        fetch(`/trips/${tripId}`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+        }).then((r) => {
+            if (r.ok) setTrips((prev) => prev.filter((e) => e.id !== tripId));
+        });
+    }
+
     const handleViewExpenses = (tripId) => {
         navigate(`/trips/${tripId}/expenses`);
     };
@@ -104,7 +115,7 @@ function TripList() {
                                 <p>
                                     📅 {new Date(trip.start_date).toLocaleDateString()} ~ {new Date(trip.end_date).toLocaleDateString()}
                                     <br />
-                                    💵 Budget: ${trip.budget}
+                                    {/* 💵 Budget: ${trip.budget} */}
                                 </p>
                                 <Button variant="outline" onClick={()=>handleViewExpenses(trip.id)}>
                                     View Expenses
@@ -112,6 +123,9 @@ function TripList() {
                                 <Button variant="outline" as={Link} to={`/trips/${trip.id}/summary`}>
                                     View Summary
                                 </Button>
+                                <DeleteButton onClick={()=> handleDeleteTrip(trip.id)}>
+                                    Delete
+                                </DeleteButton>
                             </Box>
                         </TripCard>
                     ))}

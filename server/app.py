@@ -157,6 +157,7 @@ class TripsIndex(Resource):
             return TripSchema().dump(new_trip), 201
         except IntegrityError:
             return {'errors': ['Trip creation failed.']}, 422
+        
 
         
 class TripDetail(Resource):
@@ -173,6 +174,21 @@ class TripDetail(Resource):
         if trip.user_id != int(curr_user_id):
             return {"error": "Unauthorized"}, 403      
         return TripSchema().dump(trip), 200
+    
+
+    @jwt_required()
+    def delete(self, id):
+        trip = Trip.query.get(id)
+
+        if not trip:
+            return {"error": "Trip not found"}, 404
+
+        try:
+            db.session.delete(trip)
+            db.session.commit()
+            return {"message": "Trip deleted successfully"}, 200
+        except Exception as e:
+            return {"error": str(e)}, 500
         
 
 class ExpensesIndex(Resource):

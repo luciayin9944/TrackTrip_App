@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button } from "../../styles";
-import { Wrapper, TripCard } from "./style";
+import { Wrapper, TripCard, Title } from "./style";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell
 } from "recharts";
@@ -72,9 +72,7 @@ function Dashboard() {
   return (
     <div>
       <Wrapper>
-
-        <h2>Welcome back!</h2>
-        <h3>Here's your current trip summary:</h3>
+        <Title>Current Trip</Title>
 
         <TripCard key={trip.id}>
             <Box>
@@ -83,8 +81,11 @@ function Dashboard() {
                 <p><strong>Budget:</strong> ${budget}</p>
                 <p><strong>Total Spent:</strong> ${totalSpent.toFixed(2)}</p>
                 <p><strong>Remaining Budget:</strong> ${remainingBudget.toFixed(2)}</p>
-                <Button onClick={() => navigate(`/trips/${id}/expenses`)} >
-                    View Expense Detail
+                <Button variant="outline" onClick={() => navigate(`/trips/${id}/expenses`)} >
+                    View Expenses
+                </Button>
+                <Button variant="outline" onClick={() => navigate(`/trips/${id}/summary`)} >
+                    View Summary
                 </Button>
             </Box>
         </TripCard>
