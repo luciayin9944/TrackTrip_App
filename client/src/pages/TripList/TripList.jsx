@@ -76,38 +76,39 @@ function TripList() {
         <div>
           <Wrapper>
             <Title>My Trips</Title>
-            <div style={{ textAlign: "center" }}>
-                <Button as={Link} to="/newTrip" >
-                New Trip
-                </Button>
-            </div>
-            
-            <FilterWrapper>
-                <label>
-                    Year:
-                    <select value={filterYear} onChange={(e) => setFilterYear(e.target.value)}>
-                        <option value="">All</option>
-                        <option value="2022">2022</option>
-                        <option value="2023">2023</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                    </select>
-                </label>
-                <label>
-                    Month:
-                    <select value={filterMonth} onChange={(e) => setFilterMonth(e.target.value)}>
-                        <option value="">All</option>
-                        {[...Array(12)].map((_, i) => {
-                            const val = String(i + 1).padStart(2, "0");
-                            return <option key={val} value={val}>{val}</option>;
-                        })}
-                    </select>
-                </label>
-                <Button variant="outline" onClick={() => handleFilter()}>Filter</Button>
-            </FilterWrapper>
 
             {trips.length > 0 ? (
                 <>
+                    <div style={{ textAlign: "center" }}>
+                        <Button as={Link} to="/newTrip" >
+                        New Trip
+                        </Button>
+                    </div>
+
+                     <FilterWrapper>
+                        <label>
+                            Year:
+                            <select value={filterYear} onChange={(e) => setFilterYear(e.target.value)}>
+                                <option value="">All</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                            </select>
+                        </label>
+                        <label>
+                            Month:
+                            <select value={filterMonth} onChange={(e) => setFilterMonth(e.target.value)}>
+                                <option value="">All</option>
+                                {[...Array(12)].map((_, i) => {
+                                    const val = String(i + 1).padStart(2, "0");
+                                    return <option key={val} value={val}>{val}</option>;
+                                })}
+                            </select>
+                        </label>
+                        <Button variant="outline" onClick={() => handleFilter()}>Filter</Button>
+                    </FilterWrapper>
+
                     {trips.map((trip) => (
                         <TripCard key={trip.id}>
                             <Box>
