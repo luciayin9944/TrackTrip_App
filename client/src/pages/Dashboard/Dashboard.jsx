@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Box, Button } from "../../styles";
 import { Wrapper, TripCard, Title } from "./style";
 import {
@@ -61,54 +61,63 @@ function Dashboard() {
       });
   }, []);
 
-  if (!trip) {
-    return <p style={{ marginLeft: "40px" }}>You have no trips yet.</p>;
-  }
 
-  const { id, destination, start_date, end_date, budget } = trip;
+  const { id, destination, start_date, end_date, budget } = trip || {};
+
   const totalSpent = expenses.reduce((sum, item) => sum + item.amount, 0);
-  const remainingBudget = budget - totalSpent;
+  const remainingBudget = budget ? budget - totalSpent : 0;
 
   return (
     <div>
       <Wrapper>
         <Title>Current Trip</Title>
 
-        <TripCard key={trip.id}>
-            <Box>
+        {!trip ? (
+          <>
+            <h2>You have no trip yet.</h2>
+            <Button as={Link} to="/newTrip">
+                Add a New Trip
+            </Button>
+          </>
+        ) : (
+          <>
+            <TripCard key={id}>
+              <Box>
                 <h2>{destination}</h2>
-                <p>📅 {new Date(start_date).toLocaleDateString()} ~ {new Date(end_date).toLocaleDateString()}</p>
+                <p>
+                  📅 {new Date(start_date).toLocaleDateString()} ~{" "}
+                  {new Date(end_date).toLocaleDateString()}
+                </p>
                 <p><strong>Budget:</strong> ${budget}</p>
                 <p><strong>Total Spent:</strong> ${totalSpent.toFixed(2)}</p>
                 <p><strong>Remaining Budget:</strong> ${remainingBudget.toFixed(2)}</p>
-                <Button variant="outline" onClick={() => navigate(`/trips/${id}/expenses`)} >
-                    View Expenses
+                <Button variant="outline" onClick={() => navigate(`/trips/${id}/expenses`)}>
+                  View Expenses
                 </Button>
-                <Button variant="outline" onClick={() => navigate(`/trips/${id}/summary`)} >
-                    View Summary
+                <Button variant="outline" onClick={() => navigate(`/trips/${id}/summary`)}>
+                  View Summary
                 </Button>
-            </Box>
-        </TripCard>
+              </Box>
+            </TripCard>
 
-        <div style={{ marginTop: "40px", maxWidth: "600px" }}>
-            <h4>Spending by Category</h4>
-            <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                    data={expenses}
-                    margin={{ top: 20, right: 30, left: 10, bottom: 5 }}
-                >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="category" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="amount">
+            <div style={{ marginTop: "40px", maxWidth: "600px" }}>
+              <h4>Spending by Category</h4>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={expenses} margin={{ top: 20, right: 30, left: 10, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="category" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="amount">
                     {expenses.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
-                    </Bar>
+                  </Bar>
                 </BarChart>
-            </ResponsiveContainer>
-        </div>
+              </ResponsiveContainer>
+            </div>
+          </>
+        )}
       </Wrapper>
     </div>
   );

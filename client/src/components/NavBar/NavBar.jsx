@@ -20,7 +20,7 @@ function NavBar({ user, setUser }) {
           <Link to="/">TrackTrip</Link>
         </Logo>
         <Nav>
-          {user && <h4>Welcome, {user.username}</h4>}
+          {user && <h4>Welcome, {user.username}!</h4>}
           <Button variant="outline" onClick={handleLogoutClick}>
             Logout
           </Button>
