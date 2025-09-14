@@ -123,6 +123,9 @@ function ExpenseList() {
         <Button as={Link} to={`/trips/${trip_id}/new_expense`} variant="outline">
           New Expense
         </Button>
+        <Button as={Link} to={`/trips/${trip_id}/summary`} variant="outline">
+          View Summary
+        </Button>
       </div>
 
       <Wrapper>
