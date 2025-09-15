@@ -1,9 +1,10 @@
  // ExpenseSummary.jsx
 
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import { Title, FlexWrapper, ChartBox, SummaryBox } from "./style";
+import { Box, Button } from "../../styles";
 
 
 const COLORS = [
@@ -62,6 +63,11 @@ function ExpenseSummary() {
             <p style={{ textAlign: "center", marginBottom: "2rem" }}>
                 📅 {new Date(tripInfo.start_date).toLocaleDateString()} - {new Date(tripInfo.end_date).toLocaleDateString()}
             </p>
+            <div style={{ textAlign: "center" }}>
+                <Button as={Link} to={`/trips/${trip_id}/expenses`} variant="outline">
+                    View Expenses
+                </Button>
+            </div>
 
             {data.length === 0 ? (
                 <p style={{ textAlign: "center" }}>No data available</p>

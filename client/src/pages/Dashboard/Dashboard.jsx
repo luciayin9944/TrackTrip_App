@@ -70,7 +70,7 @@ function Dashboard() {
   return (
     <div>
       <Wrapper>
-        <Title>Current Trip</Title>
+        <Title>Recent Trip</Title>
 
         {!trip ? (
           <>
